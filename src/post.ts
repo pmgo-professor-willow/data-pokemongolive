@@ -24,7 +24,18 @@ const getPost = async (url: string) => {
   const xml = await res.text();
 
   const root = parse(xml);
-  const coverImageUrl = root.querySelector('img.image__image').getAttribute('src') || '';
+
+  const defaultCoverImageUrl = root.querySelector('img.image__image')?.getAttribute('src');
+  const youtubeVideoUrl = root.querySelector('.youtube-container iframe')?.getAttribute('src');
+
+  let coverImageUrl = '';
+
+  if (defaultCoverImageUrl) {
+    coverImageUrl = defaultCoverImageUrl;
+  } else if (youtubeVideoUrl) {
+    const { 1: videoId } = youtubeVideoUrl.match(/www\.youtube\.com\/embed\/(.+)/)!;
+    coverImageUrl = `https://i.ytimg.com/vi_webp/${videoId}/maxresdefault.webp`;
+  }
 
   return {
     coverImageUrl,
