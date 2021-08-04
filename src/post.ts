@@ -34,7 +34,7 @@ const getPost = async (url: string) => {
     coverImageUrl = defaultCoverImageUrl;
   } else if (youtubeVideoUrl) {
     const { 1: videoId } = youtubeVideoUrl.match(/www\.youtube\.com\/embed\/(.+)/)!;
-    coverImageUrl = `https://i.ytimg.com/vi_webp/${videoId}/maxresdefault.webp`;
+    coverImageUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
   }
 
   return {
