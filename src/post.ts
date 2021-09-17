@@ -35,6 +35,8 @@ const getPost = async (url: string) => {
   } else if (youtubeVideoUrl) {
     const { 1: videoId } = youtubeVideoUrl.match(/www\.youtube\.com\/embed\/(.+)/)!;
     coverImageUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+  } else {
+    coverImageUrl = 'https://raw.githubusercontent.com/pmgo-professor-willow/data-pokemongolive/main/assets/default.jpeg';
   }
 
   return {
