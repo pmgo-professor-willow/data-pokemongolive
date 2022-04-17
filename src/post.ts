@@ -52,15 +52,17 @@ const getPosts = async (amount = 10, locale = 'zh_hant') => {
   const root = parse(xml);
   // "2 * amount" means pair by pair.
   const bufferAmount = 5;
-  const postItems = (root.querySelectorAll('.display-box .post-list div') || [])
+  const postItems = (root.querySelectorAll('.blogList__post') || [])
     .slice(0, 2 * (amount + bufferAmount));
 
   const posts: Post[] = [];
+
+  console.log(postItems);
   
-  for await (const [dateItem, titleItem] of _.chunk(postItems, 2)) {
-    const title = format(titleItem.querySelector('a').rawText);
-    const link = urlJoin(hostUrl, format(titleItem.querySelector('a').getAttribute('href')));
-    const date = format(dateItem.querySelector('.post-list__date').rawText);
+  for await (const postItem of postItems) {
+    const title = format(postItem.querySelector('.blogList__post__content__title').rawText);
+    const link = urlJoin(hostUrl, format(postItem.getAttribute('href')));
+    const date = format(postItem.querySelector('.blogList__post__content__date').rawText);
 
     console.log(`Load post content ... (${title})`);
 
