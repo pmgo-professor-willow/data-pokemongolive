@@ -19,30 +19,6 @@ const format = (rawText?: string) => {
     : '';
 };
 
-const getPost = async (url: string) => {
-  const res = await fetch(url);
-  const xml = await res.text();
-
-  const root = parse(xml);
-
-  const defaultCoverImageUrl = root.querySelector('img.image__image')?.getAttribute('src');
-  const youtubeVideoUrl = root.querySelector('.youtube-container iframe')?.getAttribute('src');
-
-  let coverImageUrl = '';
-
-  if (defaultCoverImageUrl) {
-    coverImageUrl = defaultCoverImageUrl;
-  } else if (youtubeVideoUrl) {
-    const { 1: videoId } = youtubeVideoUrl.match(/www\.youtube\.com\/embed\/(.+)/)!;
-    coverImageUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-  } else {
-    coverImageUrl = 'https://raw.githubusercontent.com/pmgo-professor-willow/data-pokemongolive/main/assets/default.jpeg';
-  }
-
-  return {
-    coverImageUrl,
-  };
-};
 
 const getPosts = async (amount = 10, locale = 'zh_hant') => {
   const postUrl = urlJoin(hostUrl, `/${locale}/post/`);
@@ -63,17 +39,16 @@ const getPosts = async (amount = 10, locale = 'zh_hant') => {
     const title = format(postItem.querySelector('.blogList__post__content__title').rawText);
     const link = urlJoin(hostUrl, format(postItem.getAttribute('href')));
     const date = format(postItem.querySelector('.blogList__post__content__date').rawText);
+    const coverImageUrl = format(postItem.querySelector('.image').getAttribute('src'));
 
     console.log(`Load post content ... (${title})`);
-
-    const postContent = await getPost(link);
 
     if (title) {
       posts.push({
         title,
         link,
         date,
-        coverImageUrl: postContent.coverImageUrl,
+        coverImageUrl,
       });
     }
   }
